@@ -1,5 +1,5 @@
 // Universal Sequence Maps (hoding Object for CGR operations
-
+// testing branching in git
 console.log('CGR toolbox :-)');
 
 // Overloading String and Array - watch out!
