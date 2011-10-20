@@ -8,14 +8,14 @@ cgr_map = function() {
 	this.s_n = 0;
 	this.seqs = new Array();
 
+	this.chr2idx = {A:{x:0, y:0}, C:{x:0,y:1}, G:{x:1,y:0}, T:{x:1,y:1}}
+	
 	function node(x, y, s_id, s_l) {
 		this.x = x;
 		this.y = y;
 		this.s_id = s_id;
 		this.s_l = s_l;
 	}
-
-	this.chr2idx = {A:{x:0, y:0}, C:{x:0,y:1}, G:{x:1,y:0}, T:{x:1,y:1}}
 
 	this.addstr = function(s) {
 
@@ -29,7 +29,7 @@ cgr_map = function() {
 			curr.x = (curr.x >> 1) | (vec.x << 30);
 			curr.y = (curr.y >> 1) | (vec.y << 30);
 
-			this.nodes[this.n ++] = new node(curr.x, curr.y, this.s_n, i+1);
+			this.nodes[this.n++] = new node(curr.x, curr.y, this.s_n, i+1);
 		}
 		
 		// Store the sequence.
@@ -45,9 +45,6 @@ cgr_map = function() {
 		}
 		return curr;
 	}
-
-
-
 
 	this.strdist = function(a, b) {
 		var max = 1 << 31;
@@ -72,20 +69,17 @@ cgr_map = function() {
 		curr.x = curr.x >> (31 - i);
 		curr.y = curr.y >> (31 - i);
 
-		console.log(curr);
-		console.log();
-
 		// Check for occurrences.
 		for (var j = 0; j < this.nodes.length; j++) {
 			if ((this.nodes[j].x >> (31 -i)) == curr.x &&
 			    (this.nodes[j].y >> (31 -i)) == curr.y ) {
 				res.push({ s_id:this.nodes[j].s_id,
 					   idx: this.nodes[j].s_l - i});
-				console.log(this.nodes[j]);
 			}
 		}
 	
 		return res;
 	}
 }
+
 

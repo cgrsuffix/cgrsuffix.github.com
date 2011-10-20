@@ -26,4 +26,5 @@ console.log();
 
 console.log("Search: GA");
 console.log(my_map.search('GA'));
+console.log();
 
