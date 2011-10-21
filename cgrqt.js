@@ -64,8 +64,8 @@ cgr_map = function() {
 
 	this.b2d = function(x, y, l) {
 		var max = ~(1 << (this.shift + 1)) + 1;
-		var dx = (x + (1 << (this.shift - l)))/max;
-		var dy = (y + (1 << (this.shift - l)))/max;
+		var dx = (x + (1 << (this.shift - Math.min(this.shift, l))))/max;
+		var dy = (y + (1 << (this.shift - Math.min(this.shift, l))))/max;
 
 		return {x:dx, y:dy};
 	}
@@ -80,7 +80,7 @@ cgr_map = function() {
 
 		var res = new Array();
 		var curr = this.hash(s);
-		var k = Math.min(s.length, this.shift);
+		var k = Math.min(s.length, this.shift + 1);
 
 		curr.x = curr.x >> ((this.shift + 1) - k);
 		curr.y = curr.y >> ((this.shift + 1) - k);
@@ -101,7 +101,7 @@ cgr_map = function() {
 
 		var res = new Array();
 		var curr = this.hash(s);
-		var k = Math.min(s.length, this.shift);
+		var k = Math.min(s.length, this.shift + 1);
 
 		curr.x = curr.x >> ((this.shift + 1) - k);
 		curr.y = curr.y >> ((this.shift + 1) - k);
