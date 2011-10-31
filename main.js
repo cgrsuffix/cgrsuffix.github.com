@@ -29,7 +29,7 @@ console.log(my_map.search('GA'));
 console.log(my_map.fast_search('GA'));
 console.log();
 
-console.log("Search: A");
+console.log("Search: A (" + my_map.fast_count('A') + ")");
 console.log(my_map.search('A'));
 console.log(my_map.fast_search('A'));
 console.log();

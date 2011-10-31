@@ -97,6 +97,10 @@ cgr_map = function() {
 		return res;
 	}
 
+	this.count = function(s) {
+		return this.search(s).length;
+	}
+
 	this.fast_search = function(s) {
 
 		var res = new Array();
@@ -153,6 +157,10 @@ cgr_map = function() {
 		}
 
 		return res;
+	}
+
+	this.fast_count = function(s) {
+		return this.fast_search(s).length;
 	}
 
 	function quadtree_node(node) {
