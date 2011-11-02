@@ -87,11 +87,12 @@ cgr_map = function() {
 		// Iterate over sequences...
 		for (var i = 0; i < this.seqs.length; i++) {
 			// Check for occurrences.
-			for (var j = 0; j < this.seqs[i].nodes.length; j++) {
-				if ((this.seqs[i].nodes[j].x >> (this.shift + 1 - k)) == curr.x &&
-				    (this.seqs[i].nodes[j].y >> (this.shift + 1 - k)) == curr.y ) {
-					res.push({ s_id:this.seqs[i].nodes[j].s_id,
-						   idx: this.seqs[i].nodes[j].s_l - s.length});
+			var nodes = this.seqs[i].nodes;
+			for (var j = 0; j < nodes.length; j++) {
+				if ((nodes[j].x >> (this.shift + 1 - k)) == curr.x &&
+				    (nodes[j].y >> (this.shift + 1 - k)) == curr.y ) {
+					res.push({ s_id:nodes[j].s_id,
+						   idx: nodes[j].s_l - s.length});
 				}
 			}
 		}
