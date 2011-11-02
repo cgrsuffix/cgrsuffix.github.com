@@ -123,11 +123,12 @@ cgr_map = function() {
 			for (var j = s.length - 1; quadtree_curr && j >= 0; j--) {
 				if (quadtree_curr[s[j]]) {
 					// Check match...
-					if (quadtree_curr.node && quadtree_curr.node.s_l >= s.length &&
-					    (quadtree_curr.node.x >> (this.shift + 1 - k)) == curr.x &&
-					    (quadtree_curr.node.y >> (this.shift + 1 - k)) == curr.y ) {
-						res.push({ s_id:quadtree_curr.node.s_id,
-						   idx: quadtree_curr.node.s_l - s.length});
+					var node = quadtree_curr.node;
+					if (node && node.s_l >= s.length &&
+					    (node.x >> (this.shift + 1 - k)) == curr.x &&
+					    (node.y >> (this.shift + 1 - k)) == curr.y ) {
+						res.push({ s_id:node.s_id,
+						   idx: node.s_l - s.length});
 					}
 				} else {
 					stack.push(quadtree_curr);
@@ -141,11 +142,12 @@ cgr_map = function() {
 			while (quadtree_curr) {
 				
 				// Check match...
-				if (quadtree_curr.node && quadtree_curr.node.s_l >= s.length &&
-				    (quadtree_curr.node.x >> (this.shift + 1 - k)) == curr.x &&
-				    (quadtree_curr.node.y >> (this.shift + 1 - k)) == curr.y ) {
-					res.push({ s_id:quadtree_curr.node.s_id,
-						   idx: quadtree_curr.node.s_l - s.length});
+				var node = quadtree_curr.node;
+				if (node && node.s_l >= s.length &&
+				    (node.x >> (this.shift + 1 - k)) == curr.x &&
+				    (node.y >> (this.shift + 1 - k)) == curr.y ) {
+					res.push({ s_id:node.s_id,
+						   idx: node.s_l - s.length});
 				}
 
 				// Add children...
