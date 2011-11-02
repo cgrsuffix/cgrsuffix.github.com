@@ -34,6 +34,12 @@ console.log(my_map.search('A'));
 console.log(my_map.fast_search('A'));
 console.log();
 
+console.log("Is suffix: CGA");
+console.log(my_map.issuffix(0, 'CGA'));
+console.log(my_map.issuffix(1, 'CGA'));
+console.log();
+
+
 console.log(my_map.b2d(         0,          0, 0));
 console.log(my_map.b2d(         0, 1073741824, 1));
 console.log(my_map.b2d(1073741824,  536870912, 2));

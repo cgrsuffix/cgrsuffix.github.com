@@ -4,9 +4,6 @@ cgr_map = function() {
 
 	this.shift = 30;
 
-	this.nodes = new Array();
-	this.n = 0;
-
 	this.seqs = new Array();
 	this.s_n = 0;
 
@@ -21,6 +18,8 @@ cgr_map = function() {
 
 	this.addstr = function(s) {
 
+		var nodes = new Array();
+		var n = 0;
 		var curr = {x:0, y:0};
 		var quadtree_root = new quadtree_node(null);
 
@@ -32,24 +31,24 @@ cgr_map = function() {
 			curr.x = (curr.x >> 1) | (vec.x << this.shift);
 			curr.y = (curr.y >> 1) | (vec.y << this.shift);
 
-			this.nodes[this.n] = new node(curr.x, curr.y, this.s_n, i+1);
+			nodes[n] = new node(curr.x, curr.y, this.s_n, i+1);
 
 			// Update the quadtree...
 			var quadtree_curr = quadtree_root;
 			for (var j = i; j >= 0; j--) {
 				if (! quadtree_curr[s[j]]) {
 					quadtree_curr[s[j]] =
-					    new quadtree_node(this.nodes[this.n]);
+					    new quadtree_node(nodes[n]);
 					break;
 				}
 				quadtree_curr = quadtree_curr[s[j]];
 			}
 
-			this.n ++;
+			n ++;
 		}
 		
 		// Store the sequence.
-		this.seqs[this.s_n ++] = {seq:s, x:curr.x, y:curr.y, tree:quadtree_root};
+		this.seqs[this.s_n ++] = {seq:s, x:curr.x, y:curr.y, nodes:nodes, tree:quadtree_root};
 	}
 
 	this.hash = function(s) {
@@ -85,12 +84,15 @@ cgr_map = function() {
 		curr.x = curr.x >> ((this.shift + 1) - k);
 		curr.y = curr.y >> ((this.shift + 1) - k);
 
-		// Check for occurrences.
-		for (var j = 0; j < this.nodes.length; j++) {
-			if ((this.nodes[j].x >> (this.shift + 1 - k)) == curr.x &&
-			    (this.nodes[j].y >> (this.shift + 1 - k)) == curr.y ) {
-				res.push({ s_id:this.nodes[j].s_id,
-					   idx: this.nodes[j].s_l - s.length});
+		// Iterate over sequences...
+		for (var i = 0; i < this.seqs.length; i++) {
+			// Check for occurrences.
+			for (var j = 0; j < this.seqs[i].nodes.length; j++) {
+				if ((this.seqs[i].nodes[j].x >> (this.shift + 1 - k)) == curr.x &&
+				    (this.seqs[i].nodes[j].y >> (this.shift + 1 - k)) == curr.y ) {
+					res.push({ s_id:this.seqs[i].nodes[j].s_id,
+						   idx: this.seqs[i].nodes[j].s_l - s.length});
+				}
 			}
 		}
 	
@@ -165,6 +167,19 @@ cgr_map = function() {
 
 	function quadtree_node(node) {
 		this.node = node;
+	}
+
+	this.issuffix = function(sidx, s) {
+		var curr = this.hash(s);
+		var k = Math.min(s.length, this.shift + 1);
+
+		curr.x = curr.x >> ((this.shift + 1) - k);
+		curr.y = curr.y >> ((this.shift + 1) - k);
+
+		var node = this.seqs[sidx].nodes[this.seqs[sidx].seq.length - 1];
+
+		return (node.x >> (this.shift + 1 - k)) == curr.x &&
+		       (node.y >> (this.shift + 1 - k)) == curr.y ;
 	}
 }
 

@@ -10,7 +10,6 @@ var time = Date.now();
 my_map.addstr(seq); 
 var time_diff = Date.now() - time;
 console.log("Elapsed time: " + time_diff);
-console.log("#points: " + my_map.nodes.length);
 console.log();
 
 console.log("Fast search: GACGA");
@@ -36,7 +35,6 @@ var time = Date.now();
 my_map.addstr(seq + seq); 
 var time_diff = Date.now() - time;
 console.log("Elapsed time: " + time_diff);
-console.log("#points: " + my_map.nodes.length);
 console.log();
 
 console.log("Fast search: GACGA");
@@ -62,7 +60,6 @@ var time = Date.now();
 my_map.addstr(seq + seq + seq + seq); 
 var time_diff = Date.now() - time;
 console.log("Elapsed time: " + time_diff);
-console.log("#points: " + my_map.nodes.length);
 console.log();
 
 console.log("Fast search: GACGA");
