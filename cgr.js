@@ -184,5 +184,24 @@ cgr_map = function() {
 		return (node.x >> (this.shift + 1 - k)) == curr.x &&
 		       (node.y >> (this.shift + 1 - k)) == curr.y ;
 	}
+
+	this.rlce = function(si, sj, i, j) {
+		var ni = this.seqs[si].nodes[i];
+		var nj = this.seqs[sj].nodes[j];
+		var v = (ni.x^nj.x)|(ni.y^nj.y);
+		var r;
+		var shift;
+
+		// Let us compute integer log as described at
+		// http://graphics.stanford.edu/~seander/bithacks.html#IntegerLog
+		r =     (v > 0xFFFF) << 4; v >>= r;
+		shift = (v > 0xFF  ) << 3; v >>= shift; r |= shift;
+		shift = (v > 0xF   ) << 2; v >>= shift; r |= shift;
+		shift = (v > 0x3   ) << 1; v >>= shift; r |= shift;
+                r |= (v >> 1);
+
+		// TODO: check this for equal small sequences...
+		return this.shift - r;
+	}
 }
 

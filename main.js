@@ -39,6 +39,13 @@ console.log(my_map.issuffix(0, 'CGA'));
 console.log(my_map.issuffix(1, 'CGA'));
 console.log();
 
+console.log("rLCE:");
+console.log(my_map.rlce(0, 1, 6, 4));
+console.log(my_map.rlce(0, 1, 4, 4));
+console.log(my_map.rlce(0, 1, 6, 6));
+console.log(my_map.rlce(0, 0, 3, 6));
+console.log(my_map.rlce(0, 0, 2, 6));
+console.log();
 
 console.log(my_map.b2d(         0,          0, 0));
 console.log(my_map.b2d(         0, 1073741824, 1));
