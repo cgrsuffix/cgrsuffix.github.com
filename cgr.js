@@ -199,9 +199,12 @@ cgr_map = function() {
 		shift = (v > 0xF   ) << 2; v >>= shift; r |= shift;
 		shift = (v > 0x3   ) << 1; v >>= shift; r |= shift;
                 r |= (v >> 1);
+		r = this.shift - r;
 
-		// TODO: check this for equal small sequences...
-		return this.shift - r;
+		if (r > i) r = i + 1;
+		if (r > j) r = j + 1;
+
+		return r;
 	}
 }
 
