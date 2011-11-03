@@ -1,14 +1,21 @@
 console.log('CGR on steroids ;-)');
 
+// CGR implementation supporting multiple strings, with internal
+// quadtrees for fast indexing and an efficient binary representation.
 cgr_map = function() {
 
+	// Maximum resolution.
 	this.shift = 30;
 
+	// Sequence store.
 	this.seqs = new Array();
 	this.s_n = 0;
 
+	// Maps chars to coordinates. NOTE: It assumes the alphabet
+	// {A, C, T, G}.
 	this.chr2idx = {A:{x:0, y:0}, C:{x:0,y:1}, G:{x:1,y:0}, T:{x:1,y:1}}
-	
+
+	// Helper class for node representation.
 	function node(x, y, s_id, s_l) {
 		this.x = x;
 		this.y = y;
@@ -16,6 +23,7 @@ cgr_map = function() {
 		this.s_l = s_l;
 	}
 
+	// Adds 's' to this CGR map.
 	this.addstr = function(s) {
 
 		var nodes = new Array();
@@ -51,6 +59,7 @@ cgr_map = function() {
 		this.seqs[this.s_n ++] = {seq:s, x:curr.x, y:curr.y, nodes:nodes, tree:quadtree_root};
 	}
 
+	// Computes the CGR hash for 's'.
 	this.hash = function(s) {
 		var curr = {x:0, y:0};
 		for (var i = 0; i < s.length; i++) {
@@ -61,6 +70,22 @@ cgr_map = function() {
 		return curr;
 	}
 
+	// Updates the hash 'h' of a string of length 'l' to which the
+	// leftmost char was removed and a new rightmost char 'x' was
+	// added.
+	this.rehash = function(h, l, x) {
+		// Add a 'x' as rightmost char.
+		var vec = this.chr2idx[x];
+		h.x = (h.x >> 1) | (vec.x << this.shift);
+		h.y = (h.y >> 1) | (vec.y << this.shift);
+		
+		// Remove the leftmost char.
+		h.x = h.x & ~(1 << (this.shift - l));
+		h.y = h.y & ~(1 << (this.shift - l));
+	
+		return h;
+	}
+	// Converts our binary representation to the usual double representation.
 	this.b2d = function(x, y, l) {
 		var max = ~(1 << (this.shift + 1)) + 1;
 		var dx = (x + (1 << (this.shift - Math.min(this.shift, l))))/max;
@@ -69,12 +94,14 @@ cgr_map = function() {
 		return {x:dx, y:dy};
 	}
 
+	// Computes the distance between previously added strings 'a' and 'b'.
 	this.strdist = function(a, b) {
 		var max = 1 << (this.shift + 1);
 		return Math.sqrt(Math.pow((this.seqs[a].x - this.seqs[b].x)/max, 2)
 			       + Math.pow((this.seqs[a].y - this.seqs[b].y)/max, 2));
 	}
 
+	// Searches 's' in current CGR mapped strings.
 	this.search = function(s) {
 
 		var res = new Array();
@@ -100,10 +127,12 @@ cgr_map = function() {
 		return res;
 	}
 
+	// Counts the number of occurrences of 's'.
 	this.count = function(s) {
 		return this.search(s).length;
 	}
 
+	// Searches 's' in current CGR mapped strings through internal quadtrees.
 	this.fast_search = function(s) {
 
 		var res = new Array();
@@ -164,14 +193,17 @@ cgr_map = function() {
 		return res;
 	}
 
+	// Counts the number of occurrences of 's' (faster).
 	this.fast_count = function(s) {
 		return this.fast_search(s).length;
 	}
 
+	// Helper class for internal quadtrees.
 	function quadtree_node(node) {
 		this.node = node;
 	}
 
+	// Returns 'true' iff 's' is suffix of string 'sidx' in the map.
 	this.issuffix = function(sidx, s) {
 		var curr = this.hash(s);
 		var k = Math.min(s.length, this.shift + 1);
@@ -185,6 +217,8 @@ cgr_map = function() {
 		       (node.y >> (this.shift + 1 - k)) == curr.y ;
 	}
 
+	// Returns the length of the (reverse) Longest Common Extension starting
+	// at 'i' and 'j' in strings 'si' and 'sj', respectively.
 	this.rlce = function(si, sj, i, j) {
 		var ni = this.seqs[si].nodes[i];
 		var nj = this.seqs[sj].nodes[j];

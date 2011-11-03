@@ -5,6 +5,10 @@ var my_map = new cgr_map();
 console.log("\nHash: ");
 console.log(my_map.hash('CGACCGA'));
 console.log(my_map.hash('ATACCGA'));
+console.log(my_map.hash('TACCGAC'));
+console.log(my_map.rehash(my_map.hash('ATACCGA'), 7, 'C'));
+console.log(my_map.hash('TATACCGAATACCGAATACCGAATACCGAATACCGAATACCGAATACCGAACCGAC'));
+console.log(my_map.rehash(my_map.hash('TTATACCGAATACCGAATACCGAATACCGAATACCGAATACCGAATACCGAACCGA'), 56, 'C'));
 
 my_map.addstr('CGACCGA');
 my_map.addstr('ATAGAGA');
