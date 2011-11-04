@@ -223,13 +223,11 @@ cgr_map = function() {
 		var ni = this.seqs[si].nodes[i];
 		var nj = this.seqs[sj].nodes[j];
 		var v = (ni.x^nj.x)|(ni.y^nj.y);
-		var r;
-		var shift;
 
 		// Let us compute integer log as described at
 		// http://graphics.stanford.edu/~seander/bithacks.html#IntegerLog
-		r =     (v > 0xFFFF) << 4; v >>= r;
-		shift = (v > 0xFF  ) << 3; v >>= shift; r |= shift;
+		var r = (v > 0xFFFF) << 4; v >>= r;
+		var shift = (v > 0xFF  ) << 3; v >>= shift; r |= shift;
 		shift = (v > 0xF   ) << 2; v >>= shift; r |= shift;
 		shift = (v > 0x3   ) << 1; v >>= shift; r |= shift;
                 r |= (v >> 1);

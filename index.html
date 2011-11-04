@@ -1,14 +1,188 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<script src="cgr.js" /></script>
-<title>CGR toolbox!</title>
+	<title>CGR Suffix</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+	<script src="cgr.js" /></script>
 </head>
 <body>
-<p>CGRSUFFIX</p>
 
-[<a href="https://github.com/cgrsuffix/cgrsuffix.github.com">Open source Code</a>] [<a href="https://github.com/cgrsuffix/cgrsuffix.github.com/wiki">Documentation & Demos</a>]
+	<p>[<a href="https://github.com/cgrsuffix/cgrsuffix.github.com">Code</a>]
+	   [<a href="https://github.com/cgrsuffix/cgrsuffix.github.com/wiki">Documentation & Demos</a>]
+	</p>
 
+	<h3>1. Add sequence</h3>
+	<p>Sequence over the alphabet {A,C,G,T}:<br/>
+	   <input id="sequence" type="text" size=30 style="color:blue">
+	      <button id="addSeq" onclick="addSequence()">Add</button>
+	   </input>
+	   <br/>
+	   <table id="seqTable" style="display:none;color:blue">
+	   </table>
+	</p>
+
+	<h3>2. Search substring</h3>
+	<p>Substring over the alphabet {A,C,G,T}:<br/>
+	   <input id="substring" type="text" size=30 style="color:blue">
+	      <button id="searchSubstring" onclick="searchSubstring()">Search</button>
+	   </input>
+	   <br/>
+	   <table id="searchTable" style="display:none;color:blue">
+	   </table>
+	</p>
+
+	<h3>3. Compute hash</h3>
+	<p>String over the alphabet {A,C,G,T}:<br/>
+	   <input id="string" type="text" size=30 style="color:blue">
+	      <button id="hashString" onclick="hashString()">Compute</button>
+	   </input>
+	   <br/>
+	   <table id="hashTable" style="display:none;color:blue">
+	   </table>
+	</p>
+
+
+	<script>
+		getId = function(id) { return document.getElementById(id)    };
+		tr    = function()   { return document.createElement('tr')   };
+		td    = function()   { return document.createElement('td')   };
+		tbody = function()   { return document.createElement('tbody')};
+
+		// This is slow, but we have only small strings...
+		String.prototype.pad = function(c, l) {
+			var s = this;
+			while (s.length < l)
+				s = c + s;
+			return s;
+		}
+
+		var cgrmap = new cgr_map();
+
+		addSequence = function() {
+			var seq = getId('sequence').value;
+			if (seq == '') {
+				console.log("Error: an empty string!");
+				return;
+			}
+				
+			cgrmap.addstr(seq);
+			console.log(cgrmap.seqs.length);
+
+			var table = getId('seqTable');
+			table.style.display = "";
+			var tableBody = tbody();
+			table.removeChild(table.firstChild);
+			table.appendChild(tableBody);
+			for (var i = 0; i < cgrmap.seqs.length; i++) {
+				var tableRow = tr();
+				tableBody.appendChild(tableRow);
+
+				var tableData = td();
+				tableRow.appendChild(tableData);
+				tableData.style.color = 'black';
+				tableData.textContent = 'l:';
+				var tableData = td();
+				tableRow.appendChild(tableData);
+				tableData.textContent = Math.min(cgrmap.seqs[i].seq.length, cgrmap.shift + 1);
+
+				var tableData = td();
+				tableRow.appendChild(tableData);
+				tableData.style.color = 'black';
+				tableData.textContent = 'x['+i+']:';
+				var tableData = td();
+				tableData.style.fontFamily = 'monospace';
+				tableRow.appendChild(tableData);
+				var tmps = cgrmap.seqs[i].x.toString(2).pad('0', cgrmap.shift + 1);
+				tableData.textContent = tmps;
+
+				var tableData = td();
+				tableRow.appendChild(tableData);
+				tableData.style.color = 'black';
+				tableData.textContent = 'y['+i+']:';
+				var tableData = td();
+				tableData.style.fontFamily = 'monospace';
+				tableRow.appendChild(tableData);
+				var tmps = cgrmap.seqs[i].y.toString(2).pad('0', cgrmap.shift + 1);
+				tableData.textContent = tmps;
+
+				var tableData = td();
+				tableRow.appendChild(tableData);
+				tableData.style.color = 'black';
+				tableData.textContent = 's['+i+']:';
+				var tableData = td();
+				tableRow.appendChild(tableData);
+				tableData.textContent = cgrmap.seqs[i].seq;
+			}
+		}
+
+		searchSubstring = function() {
+			var seq = getId('substring').value;
+			if (seq == '') {
+				console.log("Error: an empty string!");
+				return;
+			}
+				
+			var result = cgrmap.fast_search(seq);
+			console.log(result.length);
+
+			var table = getId('searchTable');
+			table.style.display = "";
+			var tableBody = tbody();
+			table.removeChild(table.firstChild);
+			table.appendChild(tableBody);
+			for (var i = 0; i < result.length; i++) {
+				var tableRow = tr();
+				tableBody.appendChild(tableRow);
+
+				var tableData = td();
+				tableRow.appendChild(tableData);
+				tableData.style.color = 'black';
+				tableData.textContent = 's:';
+				var tableData = td();
+				tableRow.appendChild(tableData);
+				tableData.textContent = result[i].s_id;
+
+				var tableData = td();
+				tableRow.appendChild(tableData);
+				tableData.style.color = 'black';
+				tableData.textContent = 'k:';
+				var tableData = td();
+				tableRow.appendChild(tableData);
+				tableData.textContent = result[i].idx;
+			}
+		}
+
+		hashString = function() {
+			var seq = getId('string').value;
+			if (seq == '') {
+				console.log("Error: an empty string!");
+				return;
+			}
+				
+			var result = cgrmap.hash(seq);
+
+			var tableBody = getId('hashTable');
+			tableBody.style.display = "";
+
+			var tableRow = tr();
+			tableBody.appendChild(tableRow);
+
+			var tableData = td();
+			tableData.style.fontFamily = 'monospace';
+			tableRow.appendChild(tableData);
+			var xtmp = result.x.toString(16).pad('0', 8);
+			var ytmp = result.y.toString(16).pad('0', 8);
+			tableData.textContent = xtmp + ":" + ytmp;
+
+			var tableData = td();
+			tableRow.appendChild(tableData);
+			tableData.style.color = 'white';
+			tableData.textContent = '-';
+			var tableData = td();
+			tableRow.appendChild(tableData);
+			tableData.textContent = seq;
+		}
+
+	</script>
 </body>
 </html>
